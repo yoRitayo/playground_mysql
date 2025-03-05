@@ -35,3 +35,31 @@ SELECT * FROM registros_exercicios WHERE tipo IN (SELECT tipo FROM favoritos_dr 
 -- Usando LIKE para buscar favoritos do Dr. que contenham a palavra 'cardiovascular' no motivo
 SELECT * FROM registros_exercicios WHERE tipo IN (SELECT tipo FROM favoritos_dr WHERE motivo LIKE '%cardiovascular%');
 
+-- Seleciona todos os registros de exercícios onde as calorias queimadas sejam maiores que 50 e o tempo em minutos seja menor que 30
+SELECT * FROM registros_exercicios WHERE calorias > 50 AND minutos < 30;
+
+-- Seleciona todos os registros de exercícios onde as calorias queimadas sejam maiores que 50 ou a frequência cardíaca seja superior a 100
+SELECT * FROM registros_exercicios WHERE calorias > 50 OR freq_cardiaca > 100;
+
+/* 50-90% da frequência cardíaca máxima */
+SELECT COUNT(*) FROM registros_exercicios WHERE freq_cardiaca >= ROUND(0.50 * (220-30)) AND freq_cardiaca <= ROUND(0.90 * (220-30));
+
+/* Usando CASES */
+SELECT tipo, freq_cardiaca,
+       CASE
+           WHEN freq_cardiaca > 220-30 THEN 'acima do máximo'
+           WHEN freq_cardiaca > ROUND(0.90 * (220-30)) THEN 'acima do alvo'
+           WHEN freq_cardiaca > ROUND(0.50 * (220-30)) THEN 'dentro do alvo'
+           ELSE 'abaixo do alvo'
+           END AS 'zona_fc'
+FROM registros_exercicios;
+
+SELECT COUNT(*),
+       CASE
+           WHEN freq_cardiaca > 220-30 THEN 'acima do máximo'
+           WHEN freq_cardiaca > ROUND(0.90 * (220-30)) THEN 'acima do alvo'
+           WHEN freq_cardiaca > ROUND(0.50 * (220-30)) THEN 'dentro do alvo'
+           ELSE 'abaixo do alvo'
+           END AS 'zona_fc'
+FROM registros_exercicios
+GROUP BY zona_fc;
