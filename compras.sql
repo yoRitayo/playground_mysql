@@ -8,3 +8,6 @@ SELECT * FROM compras;
 
 
 SELECT * FROM compras WHERE secao > 5 ORDER BY secao;
+
+-- Soma de produtos por secao
+SELECT secao, SUM(qtd) FROM compras GROUP BY secao;
